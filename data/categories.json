@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "Casa",
+    "color": "#d3d3d3"
+  },
+  {
+    "id": 2,
+    "name": "Academia",
+    "color": "#bf2640"
+  },
+  {
+    "id": 3,
+    "name": "Teste 01",
+    "color": "#000000"
+  }
+]
