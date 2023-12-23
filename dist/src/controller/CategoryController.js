@@ -33,7 +33,7 @@ class CategoryController {
     post(body) {
         return __awaiter(this, void 0, void 0, function* () {
             const category = new Category_1.default(body.name, body.color);
-            return this.categoryRepository.save(category);
+            return { id: yield this.categoryRepository.save(category) };
         });
     }
     put(id, body) {
@@ -41,14 +41,14 @@ class CategoryController {
             if (!Number(id))
                 throw new ValidationError_1.default('Id provided must be a number', 400);
             const category = new Category_1.default(body.name, body.color, Number(id));
-            return this.categoryRepository.save(category);
+            yield this.categoryRepository.save(category);
         });
     }
     delete(id) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!Number(id))
                 throw new ValidationError_1.default('Id provided must be a number', 400);
-            return this.categoryRepository.delete(Number(id));
+            yield this.categoryRepository.delete(Number(id));
         });
     }
 }

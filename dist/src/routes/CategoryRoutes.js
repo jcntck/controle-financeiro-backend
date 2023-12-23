@@ -14,19 +14,35 @@ class CategoryRoute {
         this.httpAdapter = httpAdapter;
         this.categoryController = categoryController;
         this.httpAdapter.on('get', '/api/v1/categories', (params, body) => __awaiter(this, void 0, void 0, function* () {
-            return this.categoryController.get();
+            const categories = yield this.categoryController.get();
+            return {
+                response: categories,
+            };
         }));
         this.httpAdapter.on('get', '/api/v1/categories/:id', (params, body) => __awaiter(this, void 0, void 0, function* () {
-            return this.categoryController.getById(params.id);
+            const category = yield this.categoryController.getById(params.id);
+            return { response: category };
         }));
         this.httpAdapter.on('post', '/api/v1/categories', (params, body) => __awaiter(this, void 0, void 0, function* () {
-            return this.categoryController.post(body);
+            const response = yield this.categoryController.post(body);
+            return {
+                response,
+                status: 201,
+            };
         }));
         this.httpAdapter.on('put', '/api/v1/categories/:id', (params, body) => __awaiter(this, void 0, void 0, function* () {
-            return this.categoryController.put(params.id, body);
+            yield this.categoryController.put(params.id, body);
+            return {
+                response: null,
+                status: 204,
+            };
         }));
         this.httpAdapter.on('delete', '/api/v1/categories/:id', (params, body) => __awaiter(this, void 0, void 0, function* () {
-            return this.categoryController.delete(params.id);
+            yield this.categoryController.delete(params.id);
+            return {
+                response: null,
+                status: 204,
+            };
         }));
     }
 }
