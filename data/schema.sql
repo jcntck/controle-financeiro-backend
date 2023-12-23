@@ -10,7 +10,7 @@ CREATE TABLE debit_transactions(
   amount REAL NOT NULL,
   description VARCHAR(255) NOT NULL,
   transaction_type CHAR(1) NOT NULL,
-  external_id VARCHAR(255) NOT NULL UNIQUE,
+  external_id VARCHAR(255) UNIQUE,
   category_id SERIAL NOT NULL,
   CONSTRAINT fk_debit_transactions_categories FOREIGN KEY(category_id) REFERENCES categories(id)
 );

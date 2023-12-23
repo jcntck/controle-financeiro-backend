@@ -8,7 +8,7 @@
     "start": "env-cmd -f .env npm run build && node ./dist/src/main.js",
     "start:dev": "env-cmd -f .env.development npm run dev",
     "test": "env-cmd -f .env.test jest",
-    "test:watch": "env-cmd -f .env.test jest --watch",
+    "test:watch": "env-cmd -f .env.test jest --watch --runInBand",
     "infra:up": "docker compose -f ./data/compose.yaml up -d",
     "infra:down": "docker compose -f ./data/compose.yaml down",
     "infra:stop": "docker compose -f ./data/compose.yaml stop"
