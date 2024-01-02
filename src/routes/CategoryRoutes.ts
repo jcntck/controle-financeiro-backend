@@ -2,7 +2,7 @@ import CategoryController from '../controller/CategoryController';
 import HttpAdapter from '../core/adapters/HttpAdapter';
 import ValidationError from '../helpers/ValidationError';
 
-export default class CategoryRoute {
+export default class CategoryRoutes {
   constructor(readonly httpAdapter: HttpAdapter, readonly categoryController: CategoryController) {
     this.httpAdapter.on('get', '/api/v1/categories', async (params: any, body: any) => {
       const categories = await this.categoryController.get();

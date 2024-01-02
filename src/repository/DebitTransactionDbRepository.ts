@@ -2,6 +2,7 @@ import { ResultBuilder } from 'pg';
 import DatabaseAdapter from '../core/adapters/DatabaseAdapter';
 import DebitTransaction from '../core/entity/DebitTransaction';
 import DebitTransactionRepository from '../core/repository/DebitTransactionRepository';
+import ValidationError from '../helpers/ValidationError';
 
 export default class DebitTransactionDbRepository implements DebitTransactionRepository {
   private tableName = 'debit_transactions';
@@ -106,6 +107,7 @@ export default class DebitTransactionDbRepository implements DebitTransactionRep
   }
 
   private handleError(err: any) {
-    return err;
+    if (err.code == 23503) return new ValidationError('Category with this id not found at database', 422);
+    throw err;
   }
 }

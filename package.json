@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "main": "src/main.ts",
   "scripts": {
-    "dev": "npm run infra:up && nodemon src/main.ts",
+    "dev": "env-cmd -f .env.development npm run config:dev",
     "build": "tsc -p .",
     "start": "env-cmd -f .env npm run build && node ./dist/src/main.js",
-    "start:dev": "env-cmd -f .env.development npm run dev",
     "test": "env-cmd -f .env.test jest",
-    "test:watch": "env-cmd -f .env.test jest --watch --runInBand",
+    "test:watch": "env-cmd -f .env.test npm run config:test",
     "infra:up": "docker compose -f ./data/compose.yaml up -d",
     "infra:down": "docker compose -f ./data/compose.yaml down",
-    "infra:stop": "docker compose -f ./data/compose.yaml stop"
+    "infra:stop": "docker compose -f ./data/compose.yaml stop",
+    "config:dev": "npm run infra:up && nodemon src/main.ts",
+    "config:test": "npm run infra:up && jest --watch --runInBand"
   },
   "keywords": [],
   "author": "",

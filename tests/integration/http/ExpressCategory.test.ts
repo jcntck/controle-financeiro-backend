@@ -5,7 +5,7 @@ import superset from "supertest";
 import ExpressAdapter from "../../../src/adapters/ExpressAdapter";
 import CategoryJsonRepository from "../../../src/repository/CategoryJsonRepository";
 import CategoryController from "../../../src/controller/CategoryController";
-import CategoryRoute from "../../../src/routes/CategoryRoutes";
+import CategoryRoutes from "../../../src/routes/CategoryRoutes";
 import { Application } from "express";
 
 let app: Application;
@@ -16,7 +16,7 @@ beforeAll(() => {
 
   const categoryRepository = new CategoryJsonRepository(databasePath);
   const categoryController = new CategoryController(categoryRepository);
-  new CategoryRoute(httpAdapter, categoryController);
+  new CategoryRoutes(httpAdapter, categoryController);
 
   app = httpAdapter.app;
 });
