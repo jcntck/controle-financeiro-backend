@@ -12,8 +12,11 @@ export default class DebitTransactionDbRepository implements DebitTransactionRep
   async getAll(): Promise<DebitTransaction[]> {
     try {
       await this.dbAdapter.connect();
-      const result = await this.dbAdapter.query(`SELECT * FROM ${this.tableName};`);
+      const result = await this.dbAdapter.query(
+        `SELECT dt.*, c.name as category_name, c.color as category_color FROM ${this.tableName} AS dt JOIN categories AS c ON dt.category_id = c.id;`
+      );
       const data: DebitTransaction[] = this.treatResult(result, true);
+      console.log(data);
       await this.dbAdapter.close();
       return data || [];
     } catch (err) {
@@ -95,6 +98,20 @@ export default class DebitTransactionDbRepository implements DebitTransactionRep
   }
 
   private toEntity(data: any): DebitTransaction {
+    if (data.category_name && data.category_color) {
+      return new DebitTransaction({
+        id: data.id,
+        amount: data.amount,
+        category_id: data.category_id,
+        date: new Date(data.transaction_date),
+        description: data.description,
+        transactionType: data.transaction_type,
+        external_id: data.external_id,
+        categoryName: data.category_name,
+        categoryColor: data.category_color,
+      });
+    }
+
     return new DebitTransaction({
       id: data.id,
       amount: data.amount,
