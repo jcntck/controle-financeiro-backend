@@ -1,3 +1,4 @@
+import { subDays } from 'date-fns';
 import Category from '../core/entity/Category';
 import DebitTransaction from '../core/entity/DebitTransaction';
 import { DebitTransactionTypes } from '../core/enums/DebitTransactionTypes.enum';
@@ -15,8 +16,19 @@ type DebitTransactionDTO = {
 export default class DebitTransactionController {
   constructor(readonly debitTransactionRepository: DebitTransactionRepository) {}
 
-  async get(): Promise<DebitTransaction[]> {
-    return this.debitTransactionRepository.getAll();
+  async get(options: { from: string; to: string }): Promise<DebitTransaction[]> {
+    let { from, to } = options;
+    const now = new Date();
+
+    if (!from) {
+      from = new Date(now.getFullYear(), now.getMonth(), 1).toJSON();
+    }
+
+    if (!to) {
+      to = new Date(now.getFullYear(), now.getMonth() + 1, 0).toJSON();
+    }
+
+    return this.debitTransactionRepository.getAll({ from, to });
   }
 
   async getById(id: string): Promise<DebitTransaction | null> {

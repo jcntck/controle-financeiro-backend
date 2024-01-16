@@ -9,14 +9,13 @@ export default class DebitTransactionDbRepository implements DebitTransactionRep
 
   constructor(readonly dbAdapter: DatabaseAdapter) {}
 
-  async getAll(): Promise<DebitTransaction[]> {
+  async getAll({ from, to }: any): Promise<DebitTransaction[]> {
     try {
       await this.dbAdapter.connect();
       const result = await this.dbAdapter.query(
-        `SELECT dt.*, c.name as category_name, c.color as category_color FROM ${this.tableName} AS dt JOIN categories AS c ON dt.category_id = c.id;`
+        `SELECT dt.*, c.name as category_name, c.color as category_color FROM ${this.tableName} AS dt JOIN categories AS c ON dt.category_id = c.id WHERE transaction_date BETWEEN '${from}' AND '${to}}';`
       );
       const data: DebitTransaction[] = this.treatResult(result, true);
-      console.log(data);
       await this.dbAdapter.close();
       return data || [];
     } catch (err) {

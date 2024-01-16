@@ -10,8 +10,8 @@ export default class DebitTransactionRoutes {
         status: 201,
       };
     });
-    this.httpAdapter.on('get', '/api/v1/debit-transactions', async (params: any, body: any) => {
-      const response = await this.debitTransactionController.get();
+    this.httpAdapter.on('get', '/api/v1/debit-transactions', async (params: any, body: any, query: any) => {
+      const response = await this.debitTransactionController.get(query);
       return {
         response,
       };
