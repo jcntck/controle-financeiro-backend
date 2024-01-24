@@ -13,7 +13,8 @@ export default class DebitTransactionDbRepository implements DebitTransactionRep
     try {
       await this.dbAdapter.connect();
       const result = await this.dbAdapter.query(
-        `SELECT dt.*, c.name as category_name, c.color as category_color FROM ${this.tableName} AS dt JOIN categories AS c ON dt.category_id = c.id WHERE transaction_date BETWEEN '${from}' AND '${to}}';`
+        `SELECT dt.*, c.name as category_name, c.color as category_color FROM ${this.tableName} AS dt JOIN categories AS c ON dt.category_id = c.id WHERE transaction_date BETWEEN $1 AND $2;`,
+        [from, to]
       );
       const data: DebitTransaction[] = this.treatResult(result, true);
       await this.dbAdapter.close();
@@ -24,10 +25,41 @@ export default class DebitTransactionDbRepository implements DebitTransactionRep
     }
   }
 
+  async getAllByExternalIds(external_ids: string[]): Promise<string[]> {
+    try {
+      let response;
+      await this.dbAdapter.connect();
+      const result = await this.dbAdapter.query(`SELECT external_id FROM ${this.tableName} WHERE external_id LIKE ANY($1);`, [external_ids]);
+      if (result.rowCount != 0) {
+        response = result.rows.map((value: any) => value.external_id);
+      } else {
+        response = [];
+      }
+      await this.dbAdapter.close();
+      return response;
+    } catch (err) {
+      if (this.dbAdapter.checkConnection()) await this.dbAdapter.close();
+      throw err;
+    }
+  }
+
   async getById(id: number): Promise<DebitTransaction | null> {
     try {
       await this.dbAdapter.connect();
       const result = await this.dbAdapter.query(`SELECT * FROM ${this.tableName} WHERE id = $1;`, [id]);
+      const data = this.treatResult(result);
+      await this.dbAdapter.close();
+      return data;
+    } catch (err) {
+      if (this.dbAdapter.checkConnection()) await this.dbAdapter.close();
+      throw err;
+    }
+  }
+
+  async getByExternalId(external_id: string): Promise<DebitTransaction | null> {
+    try {
+      await this.dbAdapter.connect();
+      const result = await this.dbAdapter.query(`SELECT * FROM ${this.tableName} WHERE external_id = $1;`, [external_id]);
       const data = this.treatResult(result);
       await this.dbAdapter.close();
       return data;

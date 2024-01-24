@@ -49,6 +49,7 @@ test("POST api/v1/debit-transactions", async () => {
       },
       amount: 125.53,
       transactionType: "E",
+      external_id: "external_id_1",
     })
     .expect(201)
     .catch((error) => console.error(error));

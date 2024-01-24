@@ -11,6 +11,7 @@ type DebitTransactionDTO = {
   category: { id: number; name: string; color: string };
   amount: number;
   transactionType: DebitTransactionTypes;
+  external_id?: string;
 };
 
 export default class DebitTransactionController {
@@ -31,9 +32,18 @@ export default class DebitTransactionController {
     return this.debitTransactionRepository.getAll({ from, to });
   }
 
+  async getAllByExternalIds({ external_ids }: { external_ids: string }): Promise<string[]> {
+    return this.debitTransactionRepository.getAllByExternalIds(JSON.parse(external_ids));
+  }
+
   async getById(id: string): Promise<DebitTransaction | null> {
     if (!Number(id)) throw new ValidationError('Id provided must be a number', 400);
     return this.debitTransactionRepository.getById(Number(id));
+  }
+
+  async getByExternalId(external_id: string): Promise<DebitTransaction | null> {
+    if (!String(external_id)) throw new ValidationError('External Id provided must be a string', 400);
+    return this.debitTransactionRepository.getByExternalId(external_id);
   }
 
   async post(body: DebitTransactionDTO): Promise<{ id: number }> {
@@ -43,6 +53,7 @@ export default class DebitTransactionController {
       category_id: body.category.id,
       amount: body.amount,
       transactionType: body.transactionType,
+      external_id: body.external_id,
     });
 
     return { id: await this.debitTransactionRepository.save(transaction) };

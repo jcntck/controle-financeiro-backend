@@ -28,7 +28,10 @@ afterAll(async () => {
 });
 
 it("Should return an empty array debitTransactions.getAll()", async () => {
-  const transactions = await debitTransactionRepository.getAll();
+  const transactions = await debitTransactionRepository.getAll({
+    from: "2022-10-01",
+    to: "2022-10-31",
+  });
   expect(transactions).toEqual([]);
 });
 
@@ -46,18 +49,32 @@ it("Should create a new debit transaction", async () => {
     description: "Adiantamento de salário",
     transactionType: DebitTransactionTypes.REVENUE,
     category_id: categoryId,
+    external_id: "external_id_1",
   });
   const id = await debitTransactionRepository.save(debitTransaction);
   expect(id).toBe(1);
 });
 
 it("Should return an array debitTransactions.getAll()", async () => {
-  const transactions = await debitTransactionRepository.getAll();
+  const transactions = await debitTransactionRepository.getAll({
+    from: "2022-10-01",
+    to: "2022-10-31",
+  });
   expect(transactions.length).toBe(1);
 });
 
 it("Should return a transaction when debitTransactions.getById() is called", async () => {
   const transaction = await debitTransactionRepository.getById(1);
+  expect(transaction).toBeInstanceOf(DebitTransaction);
+});
+
+it("Should return an array of transactions when debitTransactions.getAllByExternalIds() is called", async () => {
+  const transactions = await debitTransactionRepository.getAllByExternalIds(["external_id_1", "external_id_2"]);
+  expect(transactions.length).toBe(1);
+});
+
+it("Should return a transaction when debitTransactions.getByExternalId() is called", async () => {
+  const transaction = await debitTransactionRepository.getByExternalId("external_id_1");
   expect(transaction).toBeInstanceOf(DebitTransaction);
 });
 
@@ -71,6 +88,9 @@ it("Should edit a debit transaction", async () => {
 
 it("Should delete a debit transaction", async () => {
   await debitTransactionRepository.delete(1);
-  const transactions = await debitTransactionRepository.getAll();
+  const transactions = await debitTransactionRepository.getAll({
+    from: "2022-10-01",
+    to: "2022-10-31",
+  });
   expect(transactions.length).toBe(0);
 });

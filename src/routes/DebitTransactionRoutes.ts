@@ -16,8 +16,20 @@ export default class DebitTransactionRoutes {
         response,
       };
     });
+    this.httpAdapter.on('get', '/api/v1/debit-transactions/external', async (params: any, body: any, query: any) => {
+      const response = await this.debitTransactionController.getAllByExternalIds(query);
+      return {
+        response,
+      };
+    });
     this.httpAdapter.on('get', '/api/v1/debit-transactions/:id', async (params: any, body: any) => {
       const response = await this.debitTransactionController.getById(params.id);
+      return {
+        response,
+      };
+    });
+    this.httpAdapter.on('get', '/api/v1/debit-transactions/external/:external_id', async (params: any, body: any) => {
+      const response = await this.debitTransactionController.getByExternalId(params.external_id);
       return {
         response,
       };
