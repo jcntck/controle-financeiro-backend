@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "main": "src/main.ts",
   "scripts": {
-    "dev": "env-cmd -f .env.development nodemon src/main.ts",
+    "dev": "env-cmd -f .env.development npm run config:dev",
     "build": "tsc -p .",
     "start": "env-cmd -f .env npm run build && node ./dist/src/main.js",
     "test": "env-cmd -f .env.test jest",
-    "test:watch": "env-cmd -f .env.test jest --watch"
+    "test:watch": "env-cmd -f .env.test npm run config:test",
+    "infra:up": "docker compose -f ./data/compose.yaml up -d",
+    "infra:down": "docker compose -f ./data/compose.yaml down",
+    "infra:stop": "docker compose -f ./data/compose.yaml stop",
+    "config:dev": "npm run infra:up && nodemon src/main.ts",
+    "config:test": "npm run infra:up && jest --watch --runInBand"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +33,7 @@
     "@types/pg": "^8.10.9",
     "@types/supertest": "^2.0.16",
     "cors": "^2.8.5",
+    "date-fns": "^3.2.0",
     "env-cmd": "^10.1.0",
     "express": "^4.18.2",
     "pg": "^8.11.3",

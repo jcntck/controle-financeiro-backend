@@ -13,16 +13,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 class ExpressAdapter {
     constructor() {
         this.app = (0, express_1.default)();
         this.app.use(express_1.default.json());
+        this.app.use((0, cors_1.default)());
     }
     on(method, url, callback) {
         this.app[method](url, function (req, res) {
             return __awaiter(this, void 0, void 0, function* () {
-                const output = yield callback(req.params, req.body);
-                res.json(output);
+                try {
+                    const { response, status = 200 } = yield callback(req.params, req.body);
+                    res.status(status).json(response);
+                }
+                catch (error) {
+                    res.status(error.statusCode || 500).json({ error: error.message });
+                }
             });
         });
     }

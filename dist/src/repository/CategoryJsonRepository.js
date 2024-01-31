@@ -41,10 +41,10 @@ class CategoryJsonRepository {
     save(category) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!category.id) {
-                if (this.nameIsNotUnique(category.name)) {
-                    throw new ValidationError_1.default('Category already exists with this name', 422);
-                }
                 category.id = this.generateId();
+            }
+            if (this.fieldIsNotUnique(category, 'name') || this.fieldIsNotUnique(category, 'color')) {
+                throw new ValidationError_1.default('Category already exists with this name or color', 422);
             }
             this.categories.set(category.id, category);
             this.writeData();
@@ -87,13 +87,15 @@ class CategoryJsonRepository {
         const data = Array.from(this.categories.values());
         node_fs_1.default.writeFileSync(this.databasePath, JSON.stringify(data, null, 2));
     }
-    nameIsNotUnique(name) {
+    fieldIsNotUnique(category, field) {
+        const key = field;
         const data = Array.from(this.categories.values());
         if (!data.length)
             return false;
-        return data.some((category) => {
-            const isEqual = category.name.localeCompare(name, 'pt-BR', { sensitivity: 'base' }) === 0;
-            return isEqual;
+        return data.some((value) => {
+            var _a;
+            const isEqual = ((_a = value[key]) === null || _a === void 0 ? void 0 : _a.toString().localeCompare(category[key].toString(), 'pt-BR', { sensitivity: 'base' })) === 0;
+            return isEqual && category.id !== value.id;
         });
     }
 }
